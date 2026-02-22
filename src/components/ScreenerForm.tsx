@@ -1,5 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronRight, CheckCircle2, AlertCircle, RefreshCcw } from 'lucide-react';
+
+// Fisher-Yates shuffle (creates a new array)
+function shuffle<T>(array: T[]): T[] {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+const ACTIVITIES = [
+    { id: 'rausgehen', label: 'Rausgehen & Spielplatz' },
+    { id: 'basteln', label: 'Basteln & Malen' },
+    { id: 'lesen', label: 'Vorlesen / Bücher anschauen' },
+    { id: 'filme', label: 'Filme / Serien schauen' },
+    { id: 'spiele', label: 'Brettspiele spielen' }
+];
 
 type Step = 'intro' | 'activity' | 'series' | 'age' | 'gender' | 'tech' | 'email' | 'success' | 'reject' | 'already_completed' | 'error';
 
@@ -30,6 +48,14 @@ export default function ScreenerForm() {
     const [consent, setConsent] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+
+    // Randomize option order once per mount (avoids order bias)
+    const shuffledActivities = useMemo(() => shuffle(ACTIVITIES), []);
+    const shuffledSeries = useMemo(() => {
+        const withoutKeine = BOOK_SERIES.filter(s => s.id !== 'keine');
+        const keine = BOOK_SERIES.find(s => s.id === 'keine')!;
+        return [...shuffle(withoutKeine), keine];
+    }, []);
 
     // Anti-Replay Logic
     useEffect(() => {
@@ -225,13 +251,7 @@ export default function ScreenerForm() {
                         <p className="text-brand-navy/60 text-sm mb-6">Wähle bis zu 3 aus.</p>
 
                         <div className="space-y-3 mb-8">
-                            {[
-                                { id: 'rausgehen', label: 'Rausgehen & Spielplatz' },
-                                { id: 'basteln', label: 'Basteln & Malen' },
-                                { id: 'lesen', label: 'Vorlesen / Bücher anschauen' },
-                                { id: 'filme', label: 'Filme / Serien schauen' },
-                                { id: 'spiele', label: 'Brettspiele spielen' }
-                            ].map(opt => (
+                            {shuffledActivities.map(opt => (
                                 <button
                                     key={opt.id}
                                     onClick={() => handleActivitySelect(opt.id)}
@@ -257,7 +277,7 @@ export default function ScreenerForm() {
                         <p className="text-brand-navy/60 text-sm mb-6">Bitte wähle alle aus, die dir spontan ein Begriff sind.</p>
 
                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-8 max-h-[40vh] overflow-y-auto p-1">
-                            {BOOK_SERIES.map(series => (
+                            {shuffledSeries.map(series => (
                                 <button
                                     key={series.id}
                                     onClick={() => handleSeriesSelect(series.id)}
