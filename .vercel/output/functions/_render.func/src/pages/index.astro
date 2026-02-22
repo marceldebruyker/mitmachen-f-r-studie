@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import Process from "../components/Process.astro";
+import Interviewer from "../components/Interviewer.astro";
+import FAQ from "../components/FAQ.astro";
+import ScreenerForm from "../components/ScreenerForm";
+---
+
+<Layout>
+	<Hero />
+	<Process />
+	<Interviewer />
+	<FAQ />
+
+	<div id="screener" class="py-24 bg-brand-blush/30">
+		<div class="container mx-auto px-6">
+			<h2
+				class="text-center font-heading font-extrabold text-3xl md:text-5xl text-brand-navy mb-12"
+			>
+				Jetzt teilnehmen
+			</h2>
+			<ScreenerForm client:load />
+		</div>
+	</div>
+</Layout>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, CheckCircle2, AlertCircle, RefreshCcw } from 'lucide-react';
 
-type Step = 'intro' | 'activity' | 'series' | 'age' | 'gender' | 'tech' | 'email' | 'success' | 'reject' | 'already_completed';
+type Step = 'intro' | 'activity' | 'series' | 'age' | 'gender' | 'tech' | 'email' | 'success' | 'reject' | 'already_completed' | 'error';
 
 const BOOK_SERIES = [
     { id: 'sternenschweif', label: 'Sternenschweif' },
@@ -29,6 +29,7 @@ export default function ScreenerForm() {
     const [email, setEmail] = useState('');
     const [consent, setConsent] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     // Anti-Replay Logic
     useEffect(() => {
@@ -122,6 +123,7 @@ export default function ScreenerForm() {
         if (!email || !consent) return;
 
         setIsSubmitting(true);
+        setErrorMessage('');
 
         // Prepare payload for Supabase/Database
         const payload = {
@@ -135,21 +137,26 @@ export default function ScreenerForm() {
         };
 
         try {
-            // Real implementation will save to Supabase here
             const response = await fetch('/api/submit-screener', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            // Assuming success for UI flow
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({ error: 'Unknown server error' }));
+                console.error("API returned error:", response.status, errData);
+                setErrorMessage(errData.error || `Server error (${response.status})`);
+                setCurrentStep('error');
+                return;
+            }
+
             markAsCompleted();
             setCurrentStep('success');
         } catch (error) {
-            console.error("Error submitting form", error);
-            // Fallback: still mark completed so they don't get stuck in production
-            markAsCompleted();
-            setCurrentStep('success');
+            console.error("Network error submitting form:", error);
+            setErrorMessage('Netzwerkfehler – bitte prüfe deine Internetverbindung und versuche es erneut.');
+            setCurrentStep('error');
         } finally {
             setIsSubmitting(false);
         }
@@ -450,6 +457,29 @@ export default function ScreenerForm() {
                             📅 Jetzt Termin aussuchen
                         </a>
                         <p className="text-xs text-brand-navy/50 mt-4">Wir haben dir den Link zur Sicherheit auch per E-Mail geschickt.</p>
+                    </div>
+                )}
+
+                {currentStep === 'error' && (
+                    <div className="text-center animate-in zoom-in-95 duration-500">
+                        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <AlertCircle className="w-8 h-8 text-red-500" />
+                        </div>
+                        <h3 className="font-heading font-bold text-2xl text-brand-navy mb-4">Ups, da ist etwas schiefgelaufen</h3>
+                        <p className="text-brand-navy/70 mb-4">
+                            Deine Antworten konnten leider nicht gespeichert werden.
+                        </p>
+                        {errorMessage && (
+                            <p className="text-sm text-red-600 bg-red-50 px-4 py-2 rounded-lg mb-6">
+                                {errorMessage}
+                            </p>
+                        )}
+                        <button
+                            onClick={() => setCurrentStep('email')}
+                            className="w-full bg-brand-coral hover:bg-brand-coral/90 text-white font-bold py-4 rounded-xl shadow-md transition-all"
+                        >
+                            Nochmal versuchen
+                        </button>
                     </div>
                 )}
 

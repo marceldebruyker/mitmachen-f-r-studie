@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getSupabase } from '../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 
 export const prerender = false;
 
@@ -12,10 +12,27 @@ export const POST: APIRoute = async ({ request }) => {
             return new Response(JSON.stringify({ error: "Email is required" }), { status: 400 });
         }
 
-        const supabase = getSupabase();
+        // Get env vars — on Vercel with Astro SSR, use import.meta.env for server-side vars
+        const supabaseUrl = import.meta.env.SUPABASE_URL || '';
+        const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || '';
+
+        // Log (to Vercel Function Logs) if env vars are missing
+        if (!supabaseUrl || !supabaseAnonKey) {
+            console.error("MISSING ENV VARS:", {
+                hasUrl: !!supabaseUrl,
+                hasKey: !!supabaseAnonKey,
+                // Log all available env var keys for debugging (values are NOT logged)
+                envKeys: Object.keys(import.meta.env).filter(k => k.includes('SUPA')),
+            });
+            return new Response(
+                JSON.stringify({ error: "Database configuration missing. Please check Vercel environment variables (SUPABASE_URL, SUPABASE_ANON_KEY)." }),
+                { status: 500 }
+            );
+        }
+
+        const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
         // Insert into Supabase
-        // Table name is assumed to be 'screener_responses'
         const { data, error } = await supabase
             .from('screener_responses')
             .insert([
@@ -31,7 +48,7 @@ export const POST: APIRoute = async ({ request }) => {
             ]);
 
         if (error) {
-            console.error("Supabase insert error:", error);
+            console.error("Supabase insert error:", JSON.stringify(error));
             return new Response(JSON.stringify({ error: error.message }), { status: 500 });
         }
 

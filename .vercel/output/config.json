@@ -22,6 +22,22 @@
 		{
 			"src": "^/api/submit-screener/?$",
 			"dest": "_render"
+		},
+		{
+			"src": "^/datenschutz/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/impressum/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/interview/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/$",
+			"dest": "_render"
 		}
 	]
 }

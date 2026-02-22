@@ -1,10 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 export { renderers } from '../../renderers.mjs';
 
-const supabaseUrl = "https://placeholder.supabase.co";
-const supabaseAnonKey = "placeholder";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
+const __vite_import_meta_env__ = {"ASSETS_PREFIX": undefined, "BASE_URL": "/", "DEV": false, "MODE": "production", "PROD": true, "SITE": undefined, "SSR": true};
 const prerender = false;
 const POST = async ({ request }) => {
   try {
@@ -12,6 +9,21 @@ const POST = async ({ request }) => {
     if (!body.email) {
       return new Response(JSON.stringify({ error: "Email is required" }), { status: 400 });
     }
+    const supabaseUrl = Object.assign(__vite_import_meta_env__, { _: process.env._ }).SUPABASE_URL || "";
+    const supabaseAnonKey = Object.assign(__vite_import_meta_env__, { _: process.env._ }).SUPABASE_ANON_KEY || "";
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error("MISSING ENV VARS:", {
+        hasUrl: !!supabaseUrl,
+        hasKey: !!supabaseAnonKey,
+        // Log all available env var keys for debugging (values are NOT logged)
+        envKeys: Object.keys(Object.assign(__vite_import_meta_env__, { _: process.env._ })).filter((k) => k.includes("SUPA"))
+      });
+      return new Response(
+        JSON.stringify({ error: "Database configuration missing. Please check Vercel environment variables (SUPABASE_URL, SUPABASE_ANON_KEY)." }),
+        { status: 500 }
+      );
+    }
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
     const { data, error } = await supabase.from("screener_responses").insert([
       {
         email: body.email,
@@ -24,7 +36,7 @@ const POST = async ({ request }) => {
       }
     ]);
     if (error) {
-      console.error("Supabase insert error:", error);
+      console.error("Supabase insert error:", JSON.stringify(error));
       return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
     return new Response(JSON.stringify({ success: true }), { status: 200 });
