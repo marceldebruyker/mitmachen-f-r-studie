@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { supabase } from '../../lib/supabase';
+import { getSupabase } from '../../lib/supabase';
 
 export const prerender = false;
 
@@ -11,6 +11,8 @@ export const POST: APIRoute = async ({ request }) => {
         if (!body.email) {
             return new Response(JSON.stringify({ error: "Email is required" }), { status: 400 });
         }
+
+        const supabase = getSupabase();
 
         // Insert into Supabase
         // Table name is assumed to be 'screener_responses'
