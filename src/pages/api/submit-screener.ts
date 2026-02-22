@@ -12,9 +12,9 @@ export const POST: APIRoute = async ({ request }) => {
             return new Response(JSON.stringify({ error: "Email is required" }), { status: 400 });
         }
 
-        // Get env vars — on Vercel with Astro SSR, use import.meta.env for server-side vars
-        const supabaseUrl = import.meta.env.SUPABASE_URL || '';
-        const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || '';
+        // Get env vars — check both PUBLIC_ and non-PUBLIC_ prefixed versions
+        const supabaseUrl = import.meta.env.SUPABASE_URL || import.meta.env.PUBLIC_SUPABASE_URL || '';
+        const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
 
         // Log (to Vercel Function Logs) if env vars are missing
         if (!supabaseUrl || !supabaseAnonKey) {
