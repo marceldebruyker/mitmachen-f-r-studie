@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-coral: #E07A5F;
+  --color-brand-blush: #F4F1DE;
+  --color-brand-sand: #F2CC8F;
+  --color-brand-navy: #3D405B;
+  --color-brand-teal: #81B29A;
+  
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/40 shadow-xl;
+  }
+}

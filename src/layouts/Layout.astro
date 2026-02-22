@@ -1,0 +1,53 @@
+---
+import "../styles/global.css";
+import "@fontsource/outfit/400.css";
+import "@fontsource/outfit/700.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import CookieBanner from "../components/CookieBanner";
+
+interface Props {
+    title?: string;
+    description?: string;
+}
+
+const {
+    title = "Mitmachen & 40€ erhalten | Marktforschung Kinderbücher",
+    description = "Wir suchen Mütter für ein kurzes, entspanntes 30-minütiges Online-Interview zum Thema Kinderbücher. Aufwandsentschädigung: 40 €.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="de" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="description" content={description} />
+        <title>{title}</title>
+    </head>
+    <body
+        class="bg-brand-blush text-brand-navy font-body antialiased selection:bg-brand-coral selection:text-white min-h-screen flex flex-col"
+    >
+        <slot />
+        <footer class="mt-auto py-8 bg-brand-navy text-white text-sm">
+            <div class="container mx-auto px-6 text-center space-y-4">
+                <p>
+                    &copy; {new Date().getFullYear()} Marktforschung Kinderbücher
+                </p>
+                <div class="flex justify-center gap-6 text-brand-sand">
+                    <a
+                        href="/impressum"
+                        class="hover:text-white transition-colors">Impressum</a
+                    >
+                    <a
+                        href="/datenschutz"
+                        class="hover:text-white transition-colors"
+                        >Datenschutz</a
+                    >
+                </div>
+            </div>
+        </footer>
+        <CookieBanner client:load />
+    </body>
+</html>

@@ -1,0 +1,74 @@
+---
+import { ClipboardList, CalendarCheck, Coffee, Banknote } from "lucide-react";
+
+const steps = [
+    {
+        num: "01",
+        title: "Kurzer Check",
+        desc: "Klicke auf den Button und beantworte 4 kurze Fragen. Da wir eine bunte Mischung verschiedener Familien-Konstellationen suchen, prüfen wir so kurz, ob dein Profil aktuell noch fehlt.",
+        icon: ClipboardList,
+    },
+    {
+        num: "02",
+        title: "Termin aussuchen",
+        desc: "Passt alles, wirst du direkt zu meinem Kalender weitergeleitet. Dort suchst du dir einfach einen 30-Minuten-Termin aus, der bequem in deinen Alltag passt.",
+        icon: CalendarCheck,
+    },
+    {
+        num: "03",
+        title: "Digitaler Kaffee",
+        desc: "Wir treffen uns ganz entspannt via Google Meet (ähnlich wie Zoom oder Teams). Wichtig: Bitte nimm über einen Laptop, PC oder ein großes Tablet teil, da wir uns parallel kurz etwas auf dem Bildschirm ansehen werden.",
+        icon: Coffee,
+    },
+    {
+        num: "04",
+        title: "Dein Dankeschön",
+        desc: "Direkt im Anschluss an unser Gespräch sende ich dir als Dankeschön für deine Zeit 40 € per PayPal oder Überweisung zu.",
+        icon: Banknote,
+    },
+];
+---
+
+<section id="prozess" class="py-20 md:py-32 bg-brand-blush/30 relative">
+    <div class="container mx-auto px-6 max-w-5xl relative z-10">
+        <div class="text-center mb-16 md:mb-24">
+            <h2
+                class="font-heading font-extrabold text-3xl md:text-5xl text-brand-navy mb-4"
+            >
+                So einfach bist du <span class="text-brand-coral">dabei</span>
+            </h2>
+            <p class="text-lg text-brand-navy/70 max-w-2xl mx-auto">
+                Ohne Aufwand, ohne Vorbereitung. Alles ganz flexibel von zuhause
+                aus.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-8 relative">
+            {/* Connecting Line (Desktop) */}
+            <div
+                class="hidden md:block absolute top-[52px] left-[10%] right-[10%] h-0.5 bg-brand-sand/30 -z-10"
+            >
+            </div>
+
+            {
+                steps.map((step, index) => (
+                    <div class="relative flex flex-col items-center text-center group">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 sm:p-5 p-4 rounded-2xl bg-white shadow-xl border border-brand-sand/20 text-brand-teal mb-6 flex items-center justify-center relative z-10 group-hover:-translate-y-2 transition-transform duration-300">
+                            <step.icon className="w-full h-full" />
+                            <div class="absolute -top-3 -right-3 w-8 h-8 bg-brand-coral text-white font-bold rounded-full flex items-center justify-center text-sm shadow-md">
+                                {step.num}
+                            </div>
+                        </div>
+
+                        <h3 class="font-heading font-bold text-xl text-brand-navy mb-3">
+                            {step.title}
+                        </h3>
+                        <p class="text-brand-navy/70 leading-relaxed text-sm md:text-base">
+                            {step.desc}
+                        </p>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>

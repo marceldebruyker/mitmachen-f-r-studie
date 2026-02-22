@@ -1,0 +1,61 @@
+---
+import {
+    MessageCircleQuestion,
+    ShieldCheck,
+    Ban,
+    MonitorPlay,
+} from "lucide-react";
+
+const faqs = [
+    {
+        q: "Muss mein Kind bei dem Gespräch dabei sein?",
+        a: "Nein, absolut nicht! Das Gespräch führe ich nur mit dir. Mach es dir am besten mit einem Kaffee gemütlich, wenn die Kids in der Kita/Schule sind oder abends schlafen.",
+        icon: MonitorPlay,
+    },
+    {
+        q: "Gibt es einen Haken? Muss ich etwas kaufen?",
+        a: "Nein! Das ist reine Marktforschung. Es wird dir garantiert nichts verkauft und du gehst keine Verpflichtungen ein.",
+        icon: Ban,
+    },
+    {
+        q: "Was passiert mit meinen Daten?",
+        a: "Deine Privatsphäre ist mir extrem wichtig. Deine Angaben werden streng nach DSGVO behandelt, anonymisiert ausgewertet und niemals an Dritte weitergegeben. Nach der Auszahlung deines Dankeschöns werden deine Kontaktdaten komplett gelöscht.",
+        icon: ShieldCheck,
+    },
+];
+---
+
+<section class="py-20 md:py-32 bg-white relative">
+    <div class="container mx-auto px-6 max-w-4xl">
+        <div class="text-center mb-16">
+            <h2
+                class="font-heading font-extrabold text-3xl md:text-5xl text-brand-navy mb-4"
+            >
+                Häufige <span class="text-brand-coral">Fragen</span>
+            </h2>
+            <p class="text-lg text-brand-navy/70">
+                Alles ganz transparent und ohne Haken.
+            </p>
+        </div>
+
+        <div class="space-y-6">
+            {
+                faqs.map((faq) => (
+                    <div class="bg-brand-blush/20 border border-brand-sand/30 rounded-2xl p-6 md:p-8 flex gap-4 md:gap-6 items-start">
+                        <div class="bg-white p-3 rounded-full shadow-sm shrink-0">
+                            <faq.icon className="w-6 h-6 text-brand-teal" />
+                        </div>
+                        <div>
+                            <h3 class="font-heading font-bold text-xl text-brand-navy mb-2">
+                                {faq.q}
+                            </h3>
+                            <p class="text-brand-navy/80 leading-relaxed">
+                                {faq.a}
+                            </p>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
